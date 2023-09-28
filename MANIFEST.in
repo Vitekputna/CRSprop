@@ -1,0 +1,2 @@
+include  CRSprop/data/N2O/*.yaml
+include  CRSprop/data/C3H8O/*.yaml

@@ -1,0 +1,17 @@
+name: C3H8O
+
+data:
+  density:
+    type: external
+    data:
+      path: "Density.yaml"
+      
+  thermalconductivity:
+    type: external
+    data:
+      path: "ThermalConductivity.yaml"
+
+  viscosity:
+    type: external
+    data:
+      path: "Viscosity.yaml"
