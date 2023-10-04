@@ -50,17 +50,7 @@ class specie:
 
         path = os.path.join("data", specie, specie + ".yaml")
         stream = pkg_resources.resource_stream(__name__,path)
-        # path = specie + ".yaml"
-
-        # with resources.open_binary('CRSprop',path) as fp:
-        #     data = fp.read()
-
-        # data = yaml.safe_load(io.BytesIO(data))
-
         data = yaml.safe_load(stream)
-
-        # with open(path,'r') as file:
-        #     data = yaml.safe_load(file)
 
         self.data = data["data"]
         self.name = data["name"]
@@ -70,18 +60,11 @@ class specie:
             if self.data[property]["type"] == "external":
 
                 filename = self.data[property]["data"]["path"]
-                # path = os.path.join(os.path.curdir, "data", specie, filename)
                 path = os.path.join("data", specie, filename)
-
-                # with resources.open_text('CRSprop',path) as fp:
-                #     data = fp.read()
 
                 stream = pkg_resources.resource_stream(__name__,path)
 
                 data = yaml.safe_load(stream)
-
-                # with open(path,'r') as file:
-                #     data = yaml.safe_load(file)
 
                 self.data[property]["data"] = data
 
@@ -95,11 +78,11 @@ class CRSprop:
             spec = specie(name)
             self.species[name] = spec
             
-    def add_specie(self,name : str)->None:
-    	spec = specie(name)
-    	self.species[name] = spec
+    def add_specie(self,name : str) -> None:
+        spec = specie(name)
+        self.species[name] = spec
 
-    def list_species(self):
+    def list_species(self) -> None:
         for specie in self.species:
             print(specie)
 
