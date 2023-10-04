@@ -1,5 +1,5 @@
 from CRSprop import CRSprop
 
-prop = CRSprop(["N2O"])
+prop = CRSprop(["TEST"])
 
-print(prop.density("N2O",1,295))
+print(prop.thermal_conductivity("TEST",0.10,250))

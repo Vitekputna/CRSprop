@@ -89,11 +89,15 @@ class CRSprop:
 
     species = {}
 
-    def __init__(self,names : list):
+    def __init__(self,names : list = []):
 
         for name in names:
             spec = specie(name)
             self.species[name] = spec
+            
+    def add_specie(self,name : str)->None:
+    	spec = specie(name)
+    	self.species[name] = spec
 
     def list_species(self):
         for specie in self.species:
@@ -120,6 +124,10 @@ class CRSprop:
 
         elif data["type"] == "polynomial5":
             return self.read_fit(data["data"],pressure,temperature)
+        elif data["type"] == "constant":
+            return data["data"]["value"]
+        else:
+            print("Property type: " + data["type"] + " not recognized")
 
     def read_data(self,data : dict, pressure : float, temperature : float) -> float:
         #check range

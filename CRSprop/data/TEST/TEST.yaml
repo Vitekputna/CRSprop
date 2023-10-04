@@ -1,0 +1,17 @@
+name: TEST
+
+data:
+  density:
+    type: external
+    data:
+      path: "Density.yaml"
+      
+  thermalconductivity:
+    type: constant
+    data:
+      value: 0.1
+
+  viscosity:
+    type: constant
+    data:
+      value: 1
