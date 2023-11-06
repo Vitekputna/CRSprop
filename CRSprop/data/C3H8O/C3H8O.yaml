@@ -15,3 +15,23 @@ data:
     type: external
     data:
       path: "Viscosity.yaml"
+
+  enthalpy:
+    type: external
+    data:
+      path: "Enthalpy.yaml"
+
+  vapor_pressure:
+    type: antoine_equation
+    limits: 
+      from: 395.1
+      to: 508.24
+    data:
+      A: 4.57795
+      B: 1221.423
+      C: -87.474
+
+  
+
+
+

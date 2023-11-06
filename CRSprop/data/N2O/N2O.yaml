@@ -15,4 +15,14 @@ data:
     type: external
     data:
       path: "Viscosity.yaml"
+
+  enthalpy:
+    type: external
+    data:
+      path: "Enthalpy.yaml"
+
+  vapor_pressure:
+    type: external
+    data:
+      path: "Saturated.yaml"
     

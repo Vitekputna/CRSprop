@@ -7,11 +7,36 @@ data:
       path: "Density.yaml"
       
   thermalconductivity:
-    type: constant
+    type: external
     data:
-      value: 0.1
+      path: "Thermal_conductivity.yaml"
 
   viscosity:
-    type: constant
+    type: external
     data:
-      value: 1
+      path: "Viscosity.yaml"
+
+  cp:
+    type: external
+    data:
+      path : "cp.yaml"
+
+  enthalpy:
+    type: external
+    data:
+      path : "Enthalpy.yaml"
+
+  entropy:
+    type: external
+    data:
+      path : "Entropy.yaml"
+
+  phase:
+    type: external
+    data:
+      path : "Phase.yaml"
+
+  vapor_pressure:
+    type: external
+    data:
+      path: "Saturated.yaml"
