@@ -97,6 +97,18 @@ class CRSprop:
     
     def kinematic_viscosity(self, specie : str, pressure : float, temperature : float) -> float:
         return self.value(specie,"viscosity",pressure, temperature)
+    
+    def vapor_pressure(self, specie : str, temperature : float) -> float:
+        return self.read_vapor_pressure(specie, "vapor_pressure", temperature)
+    
+    def enthalpy(self, specie : str, pressure : float, temperature : float) -> float:
+        return self.value(specie, "enthalpy", pressure, temperature)
+
+    def entropy(self, specie : str, pressure : float, temperature : float) -> float:
+        return self.value(specie, "entropy", pressure, temperature)
+    
+    def phase(self, specie : str, pressure : float, temperature : float) -> str:
+        return self.read_phase(self.species[specie].data["phase"]["data"],pressure,temperature)
 
     def value(self, specie : str, property : str, pressure : float, temperature : float) -> float:
 
@@ -107,14 +119,45 @@ class CRSprop:
 
         elif data["type"] == "polynomial5":
             return self.read_fit(data["data"],pressure,temperature)
+        
         elif data["type"] == "constant":
             return data["data"]["value"]
+        
+        elif data["type"] == "antoine_equation":
+            return self.read_antoine_equation(data["data"],temperature)
+        
         else:
             print("Property type: " + data["type"] + " not recognized")
 
+    def read_vapor_pressure(self, specie : str, property : str, temperature : float) -> float:
+
+        data = self.species[specie].data[property]["data"]
+
+        interp_T,low_T,high_T = binary_search(temperature,data["temperature"])
+
+        return (1-interp_T)*data["pressure"][low_T] + interp_T*data["pressure"][high_T]
+
+    def read_phase(self,data : dict, pressure : float, temperature : float) -> str:
+       
+        interp,low_p,high_p = binary_search(pressure,data["pressure"])
+
+        if interp > 0.5:
+           P = high_p
+        else:
+           P = low_p
+
+        interp,low_T,high_T = binary_search(temperature,data["temperature"][P])
+
+        if interp > 0.5:
+            T = high_T
+        else:
+            T = low_T
+
+        return data["value"][P][T]
+
     def read_data(self,data : dict, pressure : float, temperature : float) -> float:
         #check range
-        if pressure >= data["pressure"][0] and pressure <= data["pressure"][-1]:
+        if (pressure >= data["pressure"][0] and pressure <= data["pressure"][-1]) or pressure is None:
             pass
         else: 
             print("pressure out of range")
@@ -156,5 +199,10 @@ class CRSprop:
 
         return (1-interp)*low_value + interp*high_value
 
-    
+    def read_antoine_equation(self, data : dict, temperature: float) -> float:
+        A = data["A"]
+        B = data["B"]
+        C = data["C"]
+
+        return 10**(A-B/(temperature+C))
 
