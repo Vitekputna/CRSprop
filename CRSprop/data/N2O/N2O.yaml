@@ -3,26 +3,41 @@ name: N2O
 data:
   density:
     type: external
+    dimension: 2
     data:
       path: Density.yaml
 
   thermalconductivity:
     type: external
+    dimension: 2
     data:
       path: "ThermalConductivity.yaml"
 
   viscosity:
     type: external
+    dimension: 2
     data:
       path: "Viscosity.yaml"
 
   enthalpy:
     type: external
+    dimension: 2
     data:
       path: "Enthalpy.yaml"
 
-  vapor_pressure:
+  saturated:
     type: external
+    dimension: 1
     data:
       path: "Saturated.yaml"
+
+  # saturated_liquid_enthalpy:
+  #   type: external
+  #   data:
+  #     path: "liquid_enthalpy.yaml"
+
+  # saturated_vapor_enthalpy:
+  #   type: external
+  #   data:
+  #     path: "vapor_enthalpy.yaml"
     

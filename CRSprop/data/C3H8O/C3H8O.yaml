@@ -3,21 +3,25 @@ name: C3H8O
 data:
   density:
     type: external
+    dimension: 2
     data:
       path: "Density.yaml"
       
   thermalconductivity:
     type: external
+    dimension: 2
     data:
       path: "ThermalConductivity.yaml"
 
   viscosity:
     type: external
+    dimension: 2
     data:
       path: "Viscosity.yaml"
 
   enthalpy:
     type: external
+    dimension: 2
     data:
       path: "Enthalpy.yaml"
 

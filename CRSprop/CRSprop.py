@@ -87,55 +87,71 @@ class CRSprop:
             print(specie)
 
     def density(self, specie : str, pressure : float, temperature : float) -> float:
-        return self.value(specie,"density",pressure, temperature)
+        return self.value(specie,"density","value","pressure","temperature",pressure, temperature)
     
     def thermal_conductivity(self, specie : str, pressure : float, temperature : float) -> float:
-        return self.value(specie,"thermalconductivity",pressure, temperature)
+        return self.value(specie,"thermalconductivity","value","pressure","temperature",pressure, temperature)
     
     def dynamic_viscosity(self, specie : str, pressure : float, temperature : float) -> float:
-        return self.value(specie,"viscosity",pressure, temperature)
+        return self.value(specie,"viscosity","value","pressure","temperature",pressure, temperature)
     
     def kinematic_viscosity(self, specie : str, pressure : float, temperature : float) -> float:
-        return self.value(specie,"viscosity",pressure, temperature)
-    
-    def vapor_pressure(self, specie : str, temperature : float) -> float:
-        return self.read_vapor_pressure(specie, "vapor_pressure", temperature)
+        return self.value(specie,"viscosity","value","pressure","temperature",pressure, temperature)
     
     def enthalpy(self, specie : str, pressure : float, temperature : float) -> float:
-        return self.value(specie, "enthalpy", pressure, temperature)
-
-    def entropy(self, specie : str, pressure : float, temperature : float) -> float:
-        return self.value(specie, "entropy", pressure, temperature)
+        return self.value(specie, "enthalpy","value","pressure","temperature",pressure, temperature)
     
-    def phase(self, specie : str, pressure : float, temperature : float) -> str:
-        return self.read_phase(self.species[specie].data["phase"]["data"],pressure,temperature)
+    def saturated_pressure(self, specie : str, temperature : float) -> float:
+        return self.interpolator_1D(specie,"saturated","pressure","temperature",temperature)
+    
+    def saturated_temperature(self, specie : str, pressure : float) -> float:
+        return self.interpolator_1D(specie,"saturated","temperature","pressure",pressure)
 
-    def value(self, specie : str, property : str, pressure : float, temperature : float) -> float:
+    def vapor_enthalpy(self, specie : str, temperature : float) -> float:
+        return self.interpolator_1D(specie,"saturated","vapor_enthalpy","temperature",temperature)
+
+    # def liquid_enthalpy(self, specie : str, pressure : float) -> float:
+
+    # def entropy(self, specie : str, pressure : float, temperature : float) -> float:
+    #     return self.value(specie, "entropy", pressure, temperature)
+    
+    # def phase(self, specie : str, pressure : float, temperature : float) -> str:
+    #     return self.interpolator_1D(self.species[specie].data["phase"]["data"],pressure,temperature)
+
+    def value(self, specie : str, property : str, data_label : str, interp_array1 : str, interp_array2 : str,  value_1 : float, value_2 : float) -> float:
 
         data = self.species[specie].data[property]
 
         if data["type"] == "data" or data["type"] == "external":
-            return self.read_data(data["data"],pressure,temperature)
+
+            if data["dimension"] == 2:
+                return self.interpolator_2D(specie,property,data_label,value_1,value_2)
+            
+            elif data["dimension"] == 1:
+                return self.interpolator_1D(specie, property,data_label,interp_array1,value_1)
+            
+            else:
+                print("Wrong data dimension")
 
         elif data["type"] == "polynomial5":
-            return self.read_fit(data["data"],pressure,temperature)
+            return self.read_fit(data["data"],value_1,value_2)
         
         elif data["type"] == "constant":
             return data["data"]["value"]
         
         elif data["type"] == "antoine_equation":
-            return self.read_antoine_equation(data["data"],temperature)
+            return self.read_antoine_equation(data["data"],value_1)
         
         else:
             print("Property type: " + data["type"] + " not recognized")
 
-    def read_vapor_pressure(self, specie : str, property : str, temperature : float) -> float:
+    def interpolator_1D(self, specie : str, property : str, data_label : str, interpolated_array : str, value : float) -> float:
 
         data = self.species[specie].data[property]["data"]
 
-        interp_T,low_T,high_T = binary_search(temperature,data["temperature"])
+        interp_T,low_T,high_T = binary_search(value,data[interpolated_array])
 
-        return (1-interp_T)*data["pressure"][low_T] + interp_T*data["pressure"][high_T]
+        return (1-interp_T)*data[data_label][low_T] + interp_T*data[data_label][high_T]
 
     def read_phase(self,data : dict, pressure : float, temperature : float) -> str:
        
@@ -155,7 +171,10 @@ class CRSprop:
 
         return data["value"][P][T]
 
-    def read_data(self,data : dict, pressure : float, temperature : float) -> float:
+    def interpolator_2D(self,specie : str, property : str, data_label : str, pressure : float, temperature : float) -> float:
+
+        data = self.species[specie].data[property]["data"]
+
         #check range
         if (pressure >= data["pressure"][0] and pressure <= data["pressure"][-1]) or pressure is None:
             pass
@@ -171,21 +190,21 @@ class CRSprop:
         if len(data["pressure"]) == len(data["temperature"]):
             interp_T,low_T,high_T = binary_search(temperature,data["temperature"][low_p])
 
-            low_value = (1-interp_T)*data["value"][low_p][low_T] + interp_T*data["value"][low_p][high_T]
+            low_value = (1-interp_T)*data[data_label][low_p][low_T] + interp_T*data[data_label][low_p][high_T]
 
             interp_T,low_T,high_T = binary_search(temperature,data["temperature"][high_p])
 
-            high_value = (1-interp_T)*data["value"][high_p][low_T] + interp_T*data["value"][high_p][high_T]
+            high_value = (1-interp_T)*data[data_label][high_p][low_T] + interp_T*data[data_label][high_p][high_T]
 
         #single temp data
         else:
             interp_T,low_T,high_T = binary_search(temperature,data["temperature"])
 
-            low_value = (1-interp_T)*data["value"][low_p][low_T] + interp_T*data["value"][low_p][high_T]
+            low_value = (1-interp_T)*data[data_label][low_p][low_T] + interp_T*data[data_label][low_p][high_T]
 
             interp_T,low_T,high_T = binary_search(temperature,data["temperature"])
 
-            high_value = (1-interp_T)*data["value"][high_p][low_T] + interp_T*data["value"][high_p][high_T]
+            high_value = (1-interp_T)*data[data_label][high_p][low_T] + interp_T*data[data_label][high_p][high_T]
 
         #interpolate values
         return (1-interp_p)*low_value + interp_p*high_value

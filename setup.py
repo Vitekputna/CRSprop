@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="CRSprop",
-    version="0.2.0",
+    version="0.3.1",
     url="https://github.com",
     author="DFawdwdfa",
     author_email="damien.j.martin@gmail.com",
