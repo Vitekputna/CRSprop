@@ -109,14 +109,15 @@ class CRSprop:
 
     def vapor_enthalpy(self, specie : str, temperature : float) -> float:
         return self.interpolator_1D(specie,"saturated","vapor_enthalpy","temperature",temperature)
-
-    # def liquid_enthalpy(self, specie : str, pressure : float) -> float:
-
-    # def entropy(self, specie : str, pressure : float, temperature : float) -> float:
-    #     return self.value(specie, "entropy", pressure, temperature)
     
-    # def phase(self, specie : str, pressure : float, temperature : float) -> str:
-    #     return self.interpolator_1D(self.species[specie].data["phase"]["data"],pressure,temperature)
+    def vapor_density(self, specie : str, temperature : float) -> float:
+        return self.interpolator_1D(specie,"saturated","vapor_density","temperature",temperature)
+
+    def liquid_enthalpy(self, specie : str, temperature : float) -> float:
+        return self.interpolator_1D(specie,"saturated","liquid_enthalpy","temperature",temperature)
+    
+    def liquid_density(self, specie : str, temperature : float) -> float:
+        return self.interpolator_1D(specie,"saturated","liquid_density","temperature",temperature)
 
     def value(self, specie : str, property : str, data_label : str, interp_array1 : str, interp_array2 : str,  value_1 : float, value_2 : float) -> float:
 
