@@ -14,7 +14,9 @@ for line in lines:
     parsed_line = [float(x) for x in line.split()[:-1]]
     parsed_lines.append(parsed_line)
 
-names = ["temperature","pressure","density","Volume","internal_energy","enthalpy","entropy","Cv","Cp","sound_speed","joule_thompson","viscosity","thermal_conductivity","surface_tension"]
+names = ["temperature","pressure","density","Volume","internal_energy","enthalpy","entropy","Cv","Cp","sound_speed","joule_thompson","viscosity","thermal_conductivity"]
+
+# print(parsed_lines)
 
 output = {}
 
