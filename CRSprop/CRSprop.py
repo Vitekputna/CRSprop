@@ -1,10 +1,7 @@
 import os
 import math
 import yaml
-
 import pkg_resources
-from importlib  import resources
-import io
 
 
 def binary_search(value : float, array : list):
@@ -39,9 +36,6 @@ class specie:
 
     name = ""
     data = {}
-
-    def __init__(self) -> None:
-        pass
 
     def __init__(self,specie : str) -> None:
         self.load(specie)
